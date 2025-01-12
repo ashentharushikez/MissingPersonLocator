@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Recognition Upload</title>
+    <style>
+        /* Basic styles for the page */
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+            background-color: #f4f4f9;
+        }
+        h2 {
+            color: #333;
+        }
+        /* Center and style the container */
+        #container {
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            max-width: 600px;
+        }
+        /* Style for the file input and button */
+        #fileInput {
+            margin: 10px 0;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        /* Styling for results and uploaded image */
+        #result, #uploadedImage {
+            margin-top: 20px;
+        }
+        img {
+            max-width: 100%;
+            max-height: 300px;
+            margin-top: 10px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h2>Upload a Photo for Face Recognition</h2>
+        <!-- File input for uploading images -->
+        <input type="file" id="fileInput" accept="image/*" required>
+        <!-- Button to trigger the upload -->
+        <button onclick="uploadImage()">Upload Image</button>
+
+        <!-- Display the uploaded image -->
+        <div id="uploadedImage"></div>
+        <!-- Display the recognition result -->
+        <p id="result"></p>
+    </div>
+
+    <script>
+        // Function to handle image upload and recognition
+        async function uploadImage() {
+            const fileInput = document.getElementById('fileInput'); // Get the file input element
+            const resultDisplay = document.getElementById('result'); // Get the result display element
+            const uploadedImageContainer = document.getElementById('uploadedImage'); // Container for showing the image
+
+            resultDisplay.textContent = "Uploading..."; // Show a loading message
+            uploadedImageContainer.innerHTML = ""; // Clear previous image and results
+
+            if (fileInput.files.length === 0) { // Check if a file is selected
+                resultDisplay.textContent = "Please select a file first.";
+                return;
+            }
+
+            const file = fileInput.files[0]; // Get the selected file
+
+            // Display the uploaded image
+            const reader = new FileReader(); // FileReader to read the image
+            reader.onload = function (e) {
+                const img = document.createElement('img'); // Create an image element
+                img.src = e.target.result; // Set the image source
+                uploadedImageContainer.appendChild(img); // Add the image to the container
+            };
+            reader.readAsDataURL(file); // Read the file as a data URL
+
+            const formData = new FormData(); // Create form data for the request
+            formData.append('file', file); // Add the file to the form data
+
+            try {
+                // Send the image to the backend for processing
+                const response = await fetch('http://127.0.0.1:5001/upload', {
+                    method: 'POST', // Use POST method
+                    body: formData // Send the form data
+                });
+                const data = await response.json(); // Get the response as JSON
+                // Show the result or an error message
+                resultDisplay.textContent = data.faces
+                    ? `Recognized Faces: ${data.faces.join(', ')}`
+                    : data.error;
+            } catch (error) {
+                console.error("Error:", error); // Log any errors
+                resultDisplay.textContent = "An error occurred. Please try again."; // Show an error message
+            }
+        }
+    </script>
+</body>
+</html>
