@@ -10,7 +10,7 @@ A facial recognition-based application designed to assist law enforcement in loc
 - Scalable and modular back-end design.  
 
 ## 📸 Screenshots  
-![App Screenshot](SS (2).png)
+![App Screenshot]SS (2).png
  
 
 ## 🚀 Technologies Used  
