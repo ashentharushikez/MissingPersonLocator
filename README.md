@@ -10,7 +10,7 @@ A facial recognition-based application designed to assist law enforcement in loc
 - Scalable and modular back-end design.  
 
 ## 📸 Screenshots  
-Templates/SS (2).png  
+SS(2).png  
 
 ## 🚀 Technologies Used  
 - **Python (Flask)** - Back-end server for processing image requests.  
